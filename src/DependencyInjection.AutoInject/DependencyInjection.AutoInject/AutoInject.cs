@@ -1,7 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 
-namespace DependencyInjection.AutoInject
+namespace Microsoft.Extensions.DependencyInjection
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
     public sealed class AutoInjectAttribute : Attribute
