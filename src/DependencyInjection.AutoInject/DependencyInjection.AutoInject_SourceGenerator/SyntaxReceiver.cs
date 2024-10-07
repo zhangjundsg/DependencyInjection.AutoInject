@@ -24,15 +24,17 @@ namespace DependencyInjection.AutoInject_SourceGenerator
                 var typeSymbol = new TypeSymbol(classSymbol);
 
                 var args = attribute.ConstructorArguments;
-                if (args.Length > 0 && args[0].Kind == TypedConstantKind.Enum && args[0].Value is int value &&
+                if (args.Length > 0 && args[0].Kind == TypedConstantKind.Enum && args[args.Length - 1].Value is bool asSelf && args[0].Value is int value &&
                     Enum.IsDefined(typeof(ServiceLifeTime), value))
                 {
-                    var serviceDescriptor = new ServiceDescriptor((ServiceLifeTime)value, typeSymbol);
+                    var serviceDescriptor = new ServiceDescriptor((ServiceLifeTime)value, typeSymbol, asSelf);
 
-                    foreach (var @interface in classSymbol.AllInterfaces)
+                    foreach (var arg in args)
                     {
-                        serviceDescriptor.ServiceTypes.Add(new TypeSymbol(@interface));
+                        if (arg.Value is ITypeSymbol symbol)
+                            serviceDescriptor.ServiceTypes.Add(new TypeSymbol(symbol));
                     }
+
 
                     yield return serviceDescriptor;
                 }

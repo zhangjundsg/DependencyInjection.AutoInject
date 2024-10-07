@@ -12,8 +12,8 @@ namespace DependencyInjection.AutoInject_Test
     {
 
     }
-    [AutoInject(ServiceLifetime.Scoped, typeof(DeviceService))]
-    public record DeviceService;
+    [AutoInject(ServiceLifetime.Scoped,true)]
+    public record DeviceService(string name,int age);
 
     public interface Iservices { }
 }

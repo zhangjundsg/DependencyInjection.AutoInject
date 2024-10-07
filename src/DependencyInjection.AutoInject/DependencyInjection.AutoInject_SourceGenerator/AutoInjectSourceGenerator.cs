@@ -23,7 +23,6 @@ namespace DependencyInjection.AutoInject_SourceGenerator
 
         public void Execute(GeneratorExecutionContext context)
         {
-            //Debugger.Launch();
             if (context.SyntaxReceiver is SyntaxReceiver receiver)
             {
                 var code = SourceGenerator(receiver, context.Compilation);
@@ -39,7 +38,7 @@ namespace DependencyInjection.AutoInject_SourceGenerator
 
             var sourceBuilder = new StringBuilder();
             sourceBuilder.AppendLine("using Microsoft.Extensions.DependencyInjection;");
-            sourceBuilder.AppendLine($"namespace {_className};");
+            sourceBuilder.AppendLine($"namespace Microsoft.Extensions.DependencyInjection;");
             sourceBuilder.AppendLine($"public static class {_className}");
             sourceBuilder.AppendLine("{");
             sourceBuilder.AppendLine($"    public static IServiceCollection Add{GetAssemblyName(compilation)}(this IServiceCollection services)");
@@ -54,13 +53,11 @@ namespace DependencyInjection.AutoInject_SourceGenerator
 
                 foreach (var service in receiver.GetServiceDescriptors(classSymbol, injectAttributeSymbol))
                 {
-                    if (service.ServiceTypes.Count == 0)
-                        sourceBuilder.AppendLine(AddService(service.LifeTime, service.DeclareType));
-                    else
-                    {
-                        foreach (var interfaces in service.ServiceTypes)
-                            sourceBuilder.AppendLine(AddService(service.LifeTime, service.DeclareType, interfaces));
-                    }
+                    if (service.AsSelf)
+                        sourceBuilder.AppendLine(AddService(service.LifeTime, service.DeclareType, null));
+
+                    foreach (var interfaces in service.ServiceTypes)
+                        sourceBuilder.AppendLine(AddService(service.LifeTime, service.DeclareType, interfaces));
                 }
             }
 
@@ -81,7 +78,7 @@ namespace DependencyInjection.AutoInject_SourceGenerator
             }
         }
 
-        private string AddService(ServiceLifeTime lifeTime, TypeSymbol DeclareType, TypeSymbol? ServiceType = default)
+        private string AddService(ServiceLifeTime lifeTime, TypeSymbol DeclareType, TypeSymbol? ServiceType)
         {
             return lifeTime switch
             {
