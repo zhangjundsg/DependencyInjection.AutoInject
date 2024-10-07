@@ -10,4 +10,8 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DependencyInjection.AutoInject_SourceGenerator\DependencyInjection.AutoInject_SourceGenerator.csproj" />
+  </ItemGroup>
+
 </Project>

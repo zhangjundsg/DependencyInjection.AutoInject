@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace DependencyInjection.AutoInject_Test
 {
@@ -8,7 +9,7 @@ namespace DependencyInjection.AutoInject_Test
         public void Test1()
         {
             var services = new ServiceCollection();
-            
+            services.AddScoped<global::System.IEquatable<global::DependencyInjection.AutoInject_Test.DeviceService>, global::DependencyInjection.AutoInject_Test.DeviceService>();
         }
     }
 }
