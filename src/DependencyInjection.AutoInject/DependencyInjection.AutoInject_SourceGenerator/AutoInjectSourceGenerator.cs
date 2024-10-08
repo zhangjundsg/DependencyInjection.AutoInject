@@ -54,10 +54,10 @@ namespace DependencyInjection.AutoInject_SourceGenerator
                 foreach (var service in receiver.GetServiceDescriptors(classSymbol, injectAttributeSymbol))
                 {
                     if (service.AsSelf)
-                        sourceBuilder.AppendLine(AddService(service.LifeTime, service.DeclareType, null));
+                        sourceBuilder.AppendLine(AddService(service.LifeTime, service.DeclareType, null, service.ServiceKey));
 
                     foreach (var interfaces in service.ServiceTypes)
-                        sourceBuilder.AppendLine(AddService(service.LifeTime, service.DeclareType, interfaces));
+                        sourceBuilder.AppendLine(AddService(service.LifeTime, service.DeclareType, interfaces, service.ServiceKey));
                 }
             }
 
@@ -78,15 +78,55 @@ namespace DependencyInjection.AutoInject_SourceGenerator
             }
         }
 
-        private string AddService(ServiceLifeTime lifeTime, TypeSymbol DeclareType, TypeSymbol? ServiceType)
+        private string AddService(ServiceLifeTime LifeTime, TypeSymbol DeclareType, TypeSymbol? ServiceType, string? ServiceKey)
         {
-            return lifeTime switch
+            switch (LifeTime, ServiceKey)
             {
-                ServiceLifeTime.Singleton => $"        services.AddSingleton<{(ServiceType == null ? $"{DeclareType}" : $"{ServiceType}, {DeclareType}")}>();",
-                ServiceLifeTime.Scoped => $"        services.AddScoped<{(ServiceType == null ? $"{DeclareType}" : $"{ServiceType}, {DeclareType}")}>();",
-                ServiceLifeTime.Transient => $"        services.AddTransient<{(ServiceType == null ? $"{DeclareType}" : $"{ServiceType}, {DeclareType}")}>();",
-                _ => string.Empty
-            };
+                case var (life, key) when life == ServiceLifeTime.Singleton && key == null:
+                    {
+                        if (ServiceType == null)
+                            return $"        services.Add(ServiceDescriptor.Singleton(typeof({DeclareType}),typeof({DeclareType})));";
+                        else
+                            return $"        services.Add(ServiceDescriptor.Singleton(typeof({ServiceType}),typeof({DeclareType})));";
+                    }
+                case var (life, key) when life == ServiceLifeTime.Singleton && key != null:
+                    {
+                        if (ServiceType == null)
+                            return $@"        services.Add(ServiceDescriptor.KeyedSingleton(typeof({DeclareType}),""{key}"",typeof({DeclareType})));";
+                        else
+                            return $@"        services.Add(ServiceDescriptor.KeyedSingleton(typeof({ServiceType}),""{key}"",typeof({DeclareType})));";
+                    }
+                case var (life, key) when life == ServiceLifeTime.Scoped && key == null:
+                    {
+                        if (ServiceType == null)
+                            return $"        services.Add(ServiceDescriptor.Scoped(typeof({DeclareType}),typeof({DeclareType})));";
+                        else
+                            return $"        services.Add(ServiceDescriptor.Scoped(typeof({ServiceType}),typeof({DeclareType})));";
+                    }
+                case var (life, key) when life == ServiceLifeTime.Scoped && key != null:
+                    {
+                        if (ServiceType == null)
+                            return $@"        services.Add(ServiceDescriptor.KeyedScoped(typeof({DeclareType}),""{key}"",typeof({DeclareType})));";
+                        else
+                            return $@"        services.Add(ServiceDescriptor.KeyedScoped(typeof({ServiceType}),""{key}"",typeof({DeclareType})));";
+                    }
+                case var (life, key) when life == ServiceLifeTime.Transient && key == null:
+                    {
+                        if (ServiceType == null)
+                            return $"        services.Add(ServiceDescriptor.Transient(typeof({DeclareType}),typeof({DeclareType})));";
+                        else
+                            return $"        services.Add(ServiceDescriptor.Transient(typeof({ServiceType}),typeof({DeclareType})));";
+                    }
+                case var (life, key) when life == ServiceLifeTime.Transient && key != null:
+                    {
+                        if (ServiceType == null)
+                            return $@"        services.Add(ServiceDescriptor.KeyedTransient(typeof({DeclareType}),""{key}"",typeof({DeclareType})));";
+                        else
+                            return $@"        services.Add(ServiceDescriptor.KeyedTransient(typeof({ServiceType}),""{key}"",typeof({DeclareType})));";
+                    }
+                default:
+                    return string.Empty;
+            }
         }
     }
 }
