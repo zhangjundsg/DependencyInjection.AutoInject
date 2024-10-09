@@ -76,8 +76,8 @@ public static class DependencyInjectionExtensions_G
 {
     public static IServiceCollection AddConsoleApp2(this IServiceCollection services)
     {
-	      services.Add(ServiceDescriptor.KeyedTransient(typeof(global::DependencyInjection.AutoInject_Test.IServices),"key1",typeof(global::DependencyInjection.AutoInject_Test.ServiceA)));
-	      services.Add(ServiceDescriptor.KeyedTransient(typeof(global::DependencyInjection.AutoInject_Test.IServices),"key2",typeof(global::DependencyInjection.AutoInject_Test.ServiceB)));
+	services.Add(ServiceDescriptor.KeyedTransient(typeof(global::DependencyInjection.AutoInject_Test.IServices),"key1",typeof(global::DependencyInjection.AutoInject_Test.ServiceA)));
+	services.Add(ServiceDescriptor.KeyedTransient(typeof(global::DependencyInjection.AutoInject_Test.IServices),"key2",typeof(global::DependencyInjection.AutoInject_Test.ServiceB)));
         services.Add(ServiceDescriptor.Scoped(typeof(global::ConsoleApp2.Service),typeof(global::ConsoleApp2.Service)));
         services.Add(ServiceDescriptor.Scoped(typeof(global::ConsoleApp2.IService),typeof(global::ConsoleApp2.Service)));
         services.Add(ServiceDescriptor.Scoped(typeof(global::ConsoleApp2.IGenreicService<>),typeof(global::ConsoleApp2.GenreicService<>)));
