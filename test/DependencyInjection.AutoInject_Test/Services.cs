@@ -15,6 +15,7 @@ namespace DependencyInjection.AutoInject_Test
     public class ServiceB : IServices { }
 
     public interface IGenreicServicesA<T> { }
+
     [AutoInject(ServiceLifetime.Scoped, typeof(IGenreicServicesA<>))]
     public class GenreicServiceA<T> : IGenreicServicesA<T> { }
 
@@ -23,7 +24,6 @@ namespace DependencyInjection.AutoInject_Test
     [AutoInject(ServiceLifetime.Singleton, typeof(IGenreicServicesB<,>))]
     public class GenreicServiceB<T, D> : IGenreicServicesB<T, D> { }
 
-    [AutoInject]
-    public class ServiceD { }
+ 
 
 }
