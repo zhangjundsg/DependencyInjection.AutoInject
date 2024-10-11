@@ -3,7 +3,7 @@
 使用source generator的di注入扩展，支持aot
 
 ## 如何使用
-
+Visual Studio 2022
 ### 1、nuget安装
 
 ```xml
