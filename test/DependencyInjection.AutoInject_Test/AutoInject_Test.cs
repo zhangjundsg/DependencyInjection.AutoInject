@@ -11,7 +11,7 @@ public class AutoInject_Test
         services.AddDependencyInjectionAutoInjectTest();
         var root = services.BuildServiceProvider();
 
-        var service = root.GetService<ServiceD>();
+        var service = root.GetService<ServiceB>();
         Assert.NotNull(service);
 
     }
@@ -22,7 +22,7 @@ public class AutoInject_Test
         services.AddDependencyInjectionAutoInjectTest();
         var root = services.BuildServiceProvider();
 
-        var service = root.GetService<IGenreicServicesA<ServiceD>>();
+        var service = root.GetService<IGenreicServicesA<ServiceA>>();
         
         Assert.NotNull(service);
     }
