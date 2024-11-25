@@ -26,7 +26,10 @@ namespace DependencyInjection.AutoInject_SourceGenerator
             if (context.SyntaxReceiver is SyntaxReceiver receiver)
             {
                 var code = SourceGenerator(receiver, context.Compilation);
-                context.AddSource(_fileName, code);
+
+                if (!string.IsNullOrEmpty(code))
+                    context.AddSource(_fileName, code);
+
             }
         }
 
@@ -37,12 +40,14 @@ namespace DependencyInjection.AutoInject_SourceGenerator
             if (injectAttributeSymbol == null) return string.Empty;
 
             var sourceBuilder = new StringBuilder();
-            sourceBuilder.AppendLine("using Microsoft.Extensions.DependencyInjection;");
-            sourceBuilder.AppendLine($"namespace Microsoft.Extensions.DependencyInjection;");
-            sourceBuilder.AppendLine($"public static class {_className}");
-            sourceBuilder.AppendLine("{");
-            sourceBuilder.AppendLine($"    public static IServiceCollection Add{GetAssemblyName(compilation)}(this IServiceCollection services)");
-            sourceBuilder.AppendLine("    {");
+            sourceBuilder
+                .AppendLine("using Microsoft.Extensions.DependencyInjection;")
+                .AppendLine("namespace Microsoft.Extensions.DependencyInjection")
+                .AppendLine("{")
+                .AppendLine($"  public static class {_className}")
+                .AppendLine("  {")
+                .AppendLine($"      public static IServiceCollection Add{GetAssemblyName(compilation)}(this IServiceCollection services)")
+                .AppendLine("      {");
 
             foreach (var item in receiver._classAndRecordNodes)
             {
@@ -61,9 +66,11 @@ namespace DependencyInjection.AutoInject_SourceGenerator
                 }
             }
 
-            sourceBuilder.AppendLine("        return services;");
-            sourceBuilder.AppendLine("    }");
-            sourceBuilder.AppendLine("}");
+            sourceBuilder
+                .AppendLine("           return services;")
+                .AppendLine("      }")
+                .AppendLine("  }")
+                .AppendLine("}");
 
             return sourceBuilder.ToString();
         }
@@ -85,44 +92,44 @@ namespace DependencyInjection.AutoInject_SourceGenerator
                 case var (life, key) when life == ServiceLifeTime.Singleton && key == null:
                     {
                         if (ServiceType == null)
-                            return $"        services.Add(ServiceDescriptor.Singleton(typeof({DeclareType}),typeof({DeclareType})));";
+                            return $"           services.Add(ServiceDescriptor.Singleton(typeof({DeclareType}),typeof({DeclareType})));";
                         else
-                            return $"        services.Add(ServiceDescriptor.Singleton(typeof({ServiceType}),typeof({DeclareType})));";
+                            return $"           services.Add(ServiceDescriptor.Singleton(typeof({ServiceType}),typeof({DeclareType})));";
                     }
                 case var (life, key) when life == ServiceLifeTime.Singleton && key != null:
                     {
                         if (ServiceType == null)
-                            return $@"        services.Add(ServiceDescriptor.KeyedSingleton(typeof({DeclareType}),""{key}"",typeof({DeclareType})));";
+                            return $@"           services.Add(ServiceDescriptor.KeyedSingleton(typeof({DeclareType}),""{key}"",typeof({DeclareType})));";
                         else
-                            return $@"        services.Add(ServiceDescriptor.KeyedSingleton(typeof({ServiceType}),""{key}"",typeof({DeclareType})));";
+                            return $@"           services.Add(ServiceDescriptor.KeyedSingleton(typeof({ServiceType}),""{key}"",typeof({DeclareType})));";
                     }
                 case var (life, key) when life == ServiceLifeTime.Scoped && key == null:
                     {
                         if (ServiceType == null)
-                            return $"        services.Add(ServiceDescriptor.Scoped(typeof({DeclareType}),typeof({DeclareType})));";
+                            return $"           services.Add(ServiceDescriptor.Scoped(typeof({DeclareType}),typeof({DeclareType})));";
                         else
-                            return $"        services.Add(ServiceDescriptor.Scoped(typeof({ServiceType}),typeof({DeclareType})));";
+                            return $"           services.Add(ServiceDescriptor.Scoped(typeof({ServiceType}),typeof({DeclareType})));";
                     }
                 case var (life, key) when life == ServiceLifeTime.Scoped && key != null:
                     {
                         if (ServiceType == null)
-                            return $@"        services.Add(ServiceDescriptor.KeyedScoped(typeof({DeclareType}),""{key}"",typeof({DeclareType})));";
+                            return $@"           services.Add(ServiceDescriptor.KeyedScoped(typeof({DeclareType}),""{key}"",typeof({DeclareType})));";
                         else
-                            return $@"        services.Add(ServiceDescriptor.KeyedScoped(typeof({ServiceType}),""{key}"",typeof({DeclareType})));";
+                            return $@"           services.Add(ServiceDescriptor.KeyedScoped(typeof({ServiceType}),""{key}"",typeof({DeclareType})));";
                     }
                 case var (life, key) when life == ServiceLifeTime.Transient && key == null:
                     {
                         if (ServiceType == null)
-                            return $"        services.Add(ServiceDescriptor.Transient(typeof({DeclareType}),typeof({DeclareType})));";
+                            return $"           services.Add(ServiceDescriptor.Transient(typeof({DeclareType}),typeof({DeclareType})));";
                         else
-                            return $"        services.Add(ServiceDescriptor.Transient(typeof({ServiceType}),typeof({DeclareType})));";
+                            return $"           services.Add(ServiceDescriptor.Transient(typeof({ServiceType}),typeof({DeclareType})));";
                     }
                 case var (life, key) when life == ServiceLifeTime.Transient && key != null:
                     {
                         if (ServiceType == null)
-                            return $@"        services.Add(ServiceDescriptor.KeyedTransient(typeof({DeclareType}),""{key}"",typeof({DeclareType})));";
+                            return $@"           services.Add(ServiceDescriptor.KeyedTransient(typeof({DeclareType}),""{key}"",typeof({DeclareType})));";
                         else
-                            return $@"        services.Add(ServiceDescriptor.KeyedTransient(typeof({ServiceType}),""{key}"",typeof({DeclareType})));";
+                            return $@"           services.Add(ServiceDescriptor.KeyedTransient(typeof({ServiceType}),""{key}"",typeof({DeclareType})));";
                     }
                 default:
                     return string.Empty;

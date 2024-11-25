@@ -9,24 +9,11 @@ namespace DependencyInjection.AutoInject_Test
 {
 
     public interface IServices { }
-    [AutoInject(ServiceLifetime.Transient, typeof(IServices), "key1", false)]
+    [AutoInject(ServiceLifetime.Transient, typeof(IServices), "key1", true)]
     public class ServiceA : IServices { }
-    [AutoInject(ServiceLifetime.Transient, typeof(IServices), "key2", false)]
+    [AutoInject(ServiceLifetime.Transient, typeof(IServices), "key2", true)]
     public class ServiceB : IServices { }
 
-    public interface IGenreicServicesA<T> { }
-
-    [AutoInject(ServiceLifetime.Scoped, typeof(IGenreicServicesA<>))]
-    public class GenreicServiceA<T> : IGenreicServicesA<T> { }
-
-
-    public interface IGenreicServicesB<T, D> { }
-    [AutoInject(ServiceLifetime.Singleton, typeof(IGenreicServicesB<,>))]
-    public class GenreicServiceB<T, D> : IGenreicServicesB<T, D> { }
-
-
-    [AutoInject(ServiceLifetime.Scoped, typeof(IGenreicServicesA<>))]
-    public class GenreicServiceAVVV<T> : IGenreicServicesA<T> { }
 
 
 

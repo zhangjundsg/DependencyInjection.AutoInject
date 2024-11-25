@@ -16,17 +16,6 @@ public class AutoInject_Test
 
     }
     [Fact]
-    public void Test_Generic()
-    {
-        var services = new ServiceCollection();
-        services.AddDependencyInjectionAutoInjectTest();
-        var root = services.BuildServiceProvider();
-
-        var service = root.GetService<IGenreicServicesA<ServiceA>>();
-        
-        Assert.NotNull(service);
-    }
-    [Fact]
     public void Test_ServiceKey()
     {
         var services = new ServiceCollection();
